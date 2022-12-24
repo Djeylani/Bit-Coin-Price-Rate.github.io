@@ -1,18 +1,25 @@
+import Fetch from 'isomorphic-unfetch';
+import Layout from '../components/Layout';
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import Prices from '../components/Prices';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+const Index = (props) => (
+  <Layout>
+    <div>
+      <h1>Welcome to BitzPrice</h1>
+      <p>Check current Bitcoin rate</p>
+      <Prices bpi={props.bpi}/>
+    </div>
+  </Layout>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+Index.getInitialProps = async function() {
+  const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+  const data = await res.json();
+
+  return {
+    bpi: data.bpi
+  };
+}
+
+export default Index;
